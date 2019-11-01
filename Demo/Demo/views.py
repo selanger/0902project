@@ -24,3 +24,5 @@ def demo02(request,city,year):
     # print (city)
     return HttpResponse("test")
     # return HttpResponse("%s年我在%s"% (year,city))
+def test():
+    pass
