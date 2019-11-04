@@ -1,4 +1,4 @@
-"""Demo URL Configuration
+"""ArticleBlog URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.2/topics/http/urls/
@@ -14,23 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,re_path
-from . import views
+from django.urls import path
+from .views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("index/",views.index),
-    path("hello/",views.hello),
-    path("demo01/",views.demo1),
-    re_path("^$",views.index),
-    re_path("demo/(\d)/",views.demo),
-    # re_path("demo02/(\d{4})/(\w*)/",views.demo02),
-    re_path("demo02/(?P<year>\d{4})/(?P<city>\w*)/",views.demo02),
-    path("tpltest/",views.tpltest),
-    path("myindex/",views.myindex),
-    path("myindex2/",views.myindex2),
-    path("myindex3/",views.myindex3),
-    path("tmptest/",views.tmptest),
-    path("statictest/",views.statictest),
-
+    path("index/",index),
+    path("about/",about,name="aboutnew"),
+    path("listpic/",listpic),
+    path("newslistpic/",newslistpic),
+    path("base/",base),
 ]

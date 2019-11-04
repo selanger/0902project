@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{{ name }} <br>
+{{ age }} <br>
+{{ hobby }} <br>
+{{ score }} <br>
+{{ age | add:4 }} <br>
+{{ name | capfirst }}
+{{ name | lower }}
+{{ name | upper }} <br>
+{{ name1 | default:"xxxx" }}
+{{ now_time | date:"Y-m-d H:i:s" }}
+{{ name | cut:"l" }}<br>
+
+{{ js | safe }}
+
+
+<h2>列表</h2>
+<p>
+    {{ hobby.0 }}
+    {{ hobby.3 }}
+    {#    {{ hobby[1] }}#}
+</p>
+
+<h2>字典</h2>
+<p>
+    {{ score }}
+    {#    {{ score["shuxue"] }}#}
+    {{ score.shuxue }}
+    {{ score.yuwen }}
+
+</p>
+
+<h2>if 判断</h2>
+{% if age < 18 %}
+    未成年
+{% elif age > 18 %}
+    成年
+{% elif age == 18 %}
+    在成年的路上
+{% endif %}
+
+{% ifequal age 18 %}
+    成年的路上
+{% endifequal %}
+{% ifequal age 19 %}
+    我是19岁
+{% endifequal %}
+{% ifequal age 17 %}
+    我是17岁
+{% endifequal %}
+
+<h2>循环列表</h2>
+{% for one in hobby reversed %}
+    循环列表 {{ one }}
+{% endfor %}
+
+<h2>循环字典</h2>
+{% for key,value in score.items %}
+    {{ key }}:{{ value }} <br>
+{% endfor %}
+
+{% for one in hobby %}
+    {% if one == "football" %}
+        足球
+    {% else %}
+        {{ one }}
+    {% endif %}
+{% endfor %}
+
+{% for one in hobby %}
+    {{ forloop.counter }}:{{ one }}
+    {% if forloop.first %}
+        <li style="color: red">{{ one }}</li>
+    {% elif forloop.last %}
+        <li style="color: blue">{{ one }}</li>
+    {% else %}
+        <li style="color:green;">{{ one }}</li>
+    {% endif %}
+{% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
