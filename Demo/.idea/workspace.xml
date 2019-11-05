@@ -2,14 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9f1bbaea-1e11-4b53-8d85-4b9dbc7435e4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/static/css/1.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/statictest.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/tmptest.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0005_auto_20191105_1514.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0006_user_height.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0007_user_width.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0008_user_width2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0009_auto_20191105_1552.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0010_auto_20191105_1553.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0011_auto_20191105_1609.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/demotest.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ArticleBlog/templates/listpic.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ArticleBlog/templates/listpic.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Demo/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Demo/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Demo/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Demo/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/1.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/1.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tmptest.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tmptest.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,9 +32,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
-        <option value="HTML File" />
         <option value="CSS File" />
+        <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -54,7 +63,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.retest">
+  <component name="RunManager" selected="Django server.Demo">
     <configuration name="retest" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Demo" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -164,6 +173,7 @@
       <option name="presentableId" value="Default" />
       <updated>1572577906584</updated>
       <workItem from="1572577919449" duration="31151000" />
+      <workItem from="1572880154207" duration="19604000" />
     </task>
     <task id="LOCAL-00001" summary="增加了 test方法">
       <created>1572599214250</created>
@@ -183,7 +193,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

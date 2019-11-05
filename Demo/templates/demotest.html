@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>球星排行榜</title>
+    <link rel="stylesheet" href="/static/css/1.css">
+</head>
+<body>
+
+{#{{ params }}#}
+{#<a href="./index.html">首页</a>#}
+{#<a href="/statictest/">首页</a>#}
+
+<ol>
+    {% for foo in params %}
+        <li>
+
+            <a href= "{{ foo.url }}">
+                <img src="/static/image/{{ foo.img }}" alt="">
+                {{ foo.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ol>
+
+
+</body>
+</html>

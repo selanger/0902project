@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import sys
-print (dir(sys))
+# print (dir(sys))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # 项目的根目录，方便开发人员使用
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app01',
 ]
 
 ## 中间件  中间人
@@ -90,12 +91,34 @@ WSGI_APPLICATION = 'Demo.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 ## 数据库相关的配置
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+## mysql配置
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',   ## 引擎
+        'NAME': 'demo',       ### 库名
+        'USER': 'root',       ### 用户名
+        'PASSWORD': '111111', ## 密码
+        'HOST': '127.0.0.1',  ## 主机   ip 地址
+        'PORT': '3306',       ## 端口
     }
 }
+
+
+# mysql 数据库的配置
+
+
+
+
+
+
+
+
 
 
 # Password validation

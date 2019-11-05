@@ -11,6 +11,8 @@ def index(request):
     return HttpResponse("hello world")
 
 
+
+
 def hello(request):
     return HttpResponse("wo shi hello")
 
@@ -114,23 +116,39 @@ from datetime import datetime
 
 def tmptest(request):
     # return render(request,"tmptest.html",{"name":"laowang","age":19})
-    # params = dict(name="lisi1111",age=19)
-    # return render(request,"tmptest.html",params)
+    params = dict(name="lisi1111",age=19)
+    return render(request,"tmptest.html",params)
 
-    name = "hello"
-    age = 18
-    # params = {"name":name,"age":age}
-    hobby = ["singing", "football", "dancer", "rapper"]
-    score = {"shuxue": 100, "yuwen": 90, "yingyu": 90}
-    now_time = datetime.now()
-    # now_time = now_time.strftime("%Y-%m-%d %H:%M:%S")
-    js = """
-    <script>
-        alert("111111");
-    </script>
-    """
-    return render(request, "tmptest.html", locals())
+    # name = "hello"
+    # age = 18
+    # # params = {"name":name,"age":age}
+    # hobby = ["singing", "football", "dancer", "rapper"]
+    # score = {"shuxue": 100, "yuwen": 90, "yingyu": 90}
+    # now_time = datetime.now()
+    # # now_time = now_time.strftime("%Y-%m-%d %H:%M:%S")
+    # js = """
+    # <script>
+    #     alert("111111");
+    # </script>
+    # """
+    # return render(request, "tmptest.html", locals())
 
 
 def statictest(request):
     return render(request, "statictest.html")
+
+
+def demotest(request):
+
+    params = [
+        {"name":"麦迪","img":"md.jpg","url":"https://www.baidu.com"},
+        {"name":"科比","img":"kb.jpg","url":"https://www.sina.com"},
+        {"name":"詹姆斯","img":"zms.jpg","url":"https://www.taobao.com"},
+        {"name":"杜老二","img":"dlt.jpg","url":"http://127.0.0.1:8000/index"},
+    ]
+
+    return render(request,"demotest.html",locals())
+
+
+
+
