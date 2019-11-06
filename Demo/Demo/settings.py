@@ -158,7 +158,7 @@ USE_L10N = True
 ## 是否使用指定的时区
 ## True 使用django 默认时区   内置时区
 ## Flase 使用指定的时区
-USE_TZ = True
+USE_TZ = False
 
 
 
