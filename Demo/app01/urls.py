@@ -12,5 +12,13 @@ urlpatterns = [
     path("foreignGet/",foreignGet),
     path("foreignUpdate/",foreignUpdate),
     path("foreignDelete/",foreignDelete),
+    path("choiceDemo/",choiceDemo),
+    path("ManyAdd/",ManyAdd),
+    path("ManyGet/",ManyGet),
+    path("ManyUpdate/",ManyUpdate),
+    path("ManyDelete/",ManyDelete),
+    path("juheView/",juheView),
+    path("FTest/",FTest),
+    path("Qtest/",Qtest),
 ]
 

@@ -2,16 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9f1bbaea-1e11-4b53-8d85-4b9dbc7435e4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app01/migrations/0013_user_now_time.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app01/migrations/0014_remove_user_now_time.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app01/migrations/0015_user_now_time.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app01/migrations/0016_auto_20191106_0930.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app01/migrations/0017_book_publish.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app01/migrations/0018_auto_20191106_1601.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app01/migrations/0019_book_publish_id.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app01/migrations/0020_auto_20191106_1618.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0021_person_teacher.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0022_auto_20191107_1003.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0023_teacher_person.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app01/migrations/0024_auto_20191107_1500.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app01/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app01/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app01/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app01/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app01/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/app01/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app01/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app01/views.py" afterDir="false" />
@@ -169,7 +165,7 @@
       <option name="presentableId" value="Default" />
       <updated>1572577906584</updated>
       <workItem from="1572577919449" duration="31151000" />
-      <workItem from="1572880154207" duration="40355000" />
+      <workItem from="1572880154207" duration="56553000" />
     </task>
     <task id="LOCAL-00001" summary="增加了 test方法">
       <created>1572599214250</created>
@@ -192,7 +188,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572943210963</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="django ORM">
+      <created>1573043948442</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1573043948442</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

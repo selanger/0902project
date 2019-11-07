@@ -42,9 +42,41 @@ class Publish(models.Model):
 class Book(models.Model):
     name = models.CharField(max_length=32,verbose_name="书名")
     publish = models.ForeignKey(to=Publish,on_delete=models.CASCADE)
+    num = models.IntegerField(default=100,verbose_name="库存量")
+    sell_num = models.IntegerField(default=100,verbose_name="已售数量")
 
     class Meta:
         db_table = "book"
+
+
+class Person(models.Model):
+    name = models.CharField(max_length=32)
+    age= models.IntegerField()
+    height = models.FloatField()
+    birthday = models.DateField(auto_now=True)
+    # teacher = models.ManyToManyField(to=Teacher)
+
+    class Meta:
+        db_table = "person"
+
+GENDER_LIST = (
+    (0,"女"),
+    (1,"男")
+)
+class Teacher(models.Model):
+    name = models.CharField(max_length=32)
+    # gender = models.IntegerField()  ## 0 代表女  1代表男
+    gender = models.IntegerField(choices=GENDER_LIST)
+    person = models.ManyToManyField(to=Person)
+    ##学科   数学 语文  英语
+
+
+
+    class Meta:
+        db_table = "teacher"
+
+
+
 
 
 
