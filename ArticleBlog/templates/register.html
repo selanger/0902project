@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{#<form action="" method="post">#}
+{#    {% csrf_token %}#}
+{#    账号： <input type="text" name = "username"> <br>#}
+{#    密码: <input type="password" name = "password"> <br>#}
+{#    <input type="submit" value="注册">#}
+{#</form>#}
+{##}
+{#<p style="color: red">#}
+{#{{ result }}#}
+{#</p>#}
+
+{#<h2>普通的样式</h2>#}
+{#{{ register_form }}#}
+{#<hr>#}
+{#<h2>p标签的样式</h2>#}
+{#{{ register_form.as_p}}#}
+{##}
+{#<hr>#}
+{#<h2>ul 标签的样式</h2>#}
+{#{{ register_form.as_ul}}#}
+{##}
+{#<hr>#}
+{#<h2>ul 标签的样式</h2>#}
+{#{{ register_form.as_table}}#}
+
+{#<hr>#}
+<h2>自定义样式</h2>
+<form action="" method="post">
+{% csrf_token %}
+    <table>
+        {% for one in register_form %}
+            <tr>
+                <th>
+                    {{ one.label }}:
+                </th>
+                <td>
+                    {{ one }}
+
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>
+                <input type="submit" value="注册">
+            </th>
+        </tr>
+    </table>
+</form>
+
+
+<p>
+    {{ result }}
+</p>
+
+</body>
+</html>

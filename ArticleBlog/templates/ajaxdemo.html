@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajaxdemo</title>
+    <script src="/static/js/jquery.min.js"></script>
+</head>
+<body>
+<h3>校验用户名密码</h3>
+<form action="">
+    <input id="username" type="text" name="username" placeholder="用户名"><br>
+    <input id = "password" type="password" name="password" placeholder="密码"><br>
+    <input id="checkvalue" type="button" value="校验">
+
+</form>
+<p id="content"></p>
+
+<script>
+    $("#checkvalue").click(
+        function () {
+            {#console.log("方法")#}
+            //  获取到填写的数据
+            var username = $("#username").val();
+            var password = $("#password").val();
+            //  发送一个请求   ajax 请求
+            {#var url= "/ajaxreq/"  //  构建请求的url#}
+            var url = "/ajaxreq/?username=" + username + "&password=" + password;
+            $.ajax({
+                url:url,   //  请求要请求的地址
+                type:"get",    //  请求的类型  get  post
+                data:"",    //  请求要发送的数据  常在post请求中使用，get请求只需要拼接请求的url就可以
+                success:function (data) {
+                    //  请求成功之后要执行的方法
+                    //   data  接受请求成功之后的返回值
+                    {#console.log(data);#}
+                    console.log(data["code"]);
+                    console.log(data["msg"]);
+                    $("#content").text(data["msg"])
+
+                },
+                error:function (error) {
+                    // 请求失败之后要执行的内容
+                }
+            })
+
+            //  拿到响应
+        }
+    )
+
+
+
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>

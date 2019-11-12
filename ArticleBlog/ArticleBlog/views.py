@@ -14,6 +14,7 @@ def index(request):
     :param request:
     :return:
     """
+    print (request.COOKIES.get("username"))
     ## 最新的 6条数据
     newarticle = Article.objects.order_by("-date")[:6]
     ## 返回图文推荐   7条数据
@@ -77,6 +78,7 @@ def articleDetails(request,id):
 
 
 def fytest(request):
+
     ### 分页的方法
     article = Article.objects.all().order_by("id")
     # print (aricle)
@@ -104,6 +106,199 @@ def fytest(request):
     # print(page_obj.previous_page_number())  ## 上一页的页码
 
     return HttpResponse("fenye test")
+
+def requsttest(request):
+    # print (dir(request))
+    # print(request.COOKIES)  ## 用户的身份
+    # print(request.FILES)  ## 请求携带的文件   比如：  图片，文档，压缩包
+    # print(request.META)     ## 请求的具体数据，包含所有的http请求信息
+    # print(request.GET)   ## 获取get请求传递的参数
+    # print (request.GET.get("name"))  ## 获取get请求参数中指定key的value
+    # print(request.POST)      ## 获取post请求传递的参数
+    # print(request.POST.get("name"))   ## 获取post请求传递参数中指定key的value
+    # print(request.scheme)    ##   http 或者是  https
+    # print(request.method)      ## 获取请求方式   POST  GET
+    # print(request.path)    ## 请求的路径
+    # print(request.body)   ## 请求的主体，放请求的内容  bytes 类型
+    # print(request.META.get("OS"))   ## 请求来源使用的操作系统
+    # print(request.META.get("HTTP_USER_AGENT"))   ##  浏览器的版本
+    # print(request.META.get("HTTP_HOST"))    ## 请求的主机
+    print(request.META.get("HTTP_REFERER"))    ## 请求的来源
+    # print(request.META)
+
+
+
+
+
+
+
+    return HttpResponse("请求demo")
+
+def reqtest(request):
+
+    ## 获取get请求的参数
+    data = request.GET
+    print(data)
+    username = request.GET.get("username")
+    print (username)
+
+    return render(request,"reqtest.html")
+
+
+def search(requst):
+    ## 获取数据
+    search_key = requst.GET.get("searchkey")
+    article = []
+    ## 判断是否空值
+    if search_key:
+        ## 如果有数据   查询数据库
+        article=Article.objects.filter(title__icontains=search_key).all().values("title")
+    ## 如果没有数据   返回页面
+    return render(requst,"search.html",locals())
+
+def reqpost(request):
+    ## 接受用户的请求
+    if request.method == "POST":
+        ## 处理页面
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        print(username)
+        print(password)
+    return render(request,"reqpost.html")
+
+import hashlib
+## 加密
+def setPassword(password):
+    ## 将password 通过md5 加密
+    md5 = hashlib.md5()
+    md5.update(password.encode())   ## 要求，传递的是一个  bytes类型
+    result = md5.hexdigest()
+    return result
+
+
+
+
+from Article.form import UserForm
+def register(request):
+    ## 获取数据   完成注册功能
+    register_form = UserForm()  ## 实例化
+    if request.method == "POST":
+        print(request.POST)
+        # username = request.POST.get("username")
+        # username = request.POST.get("name")
+        # password = request.POST.get("password")
+        ## 将接收到的数据，进行校验， 数据是否合法
+        ## 校验用户名 不能为  admin@126.com
+        ## 将获取到的数据  给到form表单类
+        data = UserForm(request.POST)
+        if data.is_valid():   ##判断校验是否成功
+            ## 获取数据
+            clean_data = data.cleaned_data   ## 获取经过校验的数据
+            # print (clean_data)
+            username = clean_data.get("name")
+            password = clean_data.get("password")
+            if username and password:
+                ## 校验用户是否重复
+                flag = User.objects.filter(name = username).exists()  ## 布尔类型
+                ## 重复
+                if not flag:
+                    user = User()
+                    user.name = username
+                    user.password = setPassword(password)
+                    user.save()
+                    result = "注册成功"
+                else:
+                    result = "用户已存在"
+            else:
+                result = "用户名或密码为空"
+        else:
+            ## 校验不通过的
+            # result = "校验不通过"
+            print (data.errors)
+            result = data.errors
+    return render(request,"register.html",locals())
+
+
+
+def ajaxtest(request):
+    username = request.GET.get("username")
+    if username:
+        flag = User.objects.filter(name = username).exists()
+        if flag:
+            ## 存在
+            result = "存在"
+        else:
+            result = "不存在"
+
+
+    return render(request,"ajaxtest.html",locals())
+
+from django.http import JsonResponse
+
+
+
+
+def ajaxdemo(request):
+    return render(request,"ajaxdemo.html")
+def ajaxreq(request):
+    """
+    接受用户的请求     校验用户名  密码
+        参数：   username    password
+    处理请求
+        查询数据库   查看指定用户名密码的用户是否存在
+    返回响应
+        存在或者 不存在
+    :param request:
+    :return:
+    """
+    print (request.GET)
+    username = request.GET.get("username")
+    password = request.GET.get("password")
+    result = {"code":10000,"msg":""}
+
+    if username and password:
+        flag = User.objects.filter(name=username,password= setPassword(password)).exists()
+        if flag:
+            ## 存在
+            result["msg"]="存在"
+        else:
+            result["msg"] = "不存在"
+            result["code"] = 10001
+    else:
+        result["msg"] = "密码或者用户名为空"
+        result["code"] = 10002
+    # return HttpResponse("xxxxxxx")
+    return JsonResponse(result)
+
+## 提供注册页面
+def ajaxregister(request):
+    return render(request,"ajaxregister.html")
+
+## 处理ajax 请求
+def ajaxpost(request):
+
+    result = {"code":10000,"msg":""}
+    print(request.POST)
+    ## 处理注册
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    if username and password:
+        ## 数据存在
+        ## 判断用户名是否存在
+        flag = User.objects.filter(name = username).exists()
+        if flag:
+            ## 存在
+            result = {"code": 10002, "msg": "该用户已存在"}
+        else:
+            try:
+                User.objects.create(name=username,password = setPassword(password))
+                result = {"code": 10000, "msg": "注册成功"}
+            except:
+                result = {"code": 10003, "msg": "操作失败，联系管理员"}
+    else:
+        result = {"code": 10001, "msg": "参数为空"}
+    return JsonResponse(result)
+
 
 
 

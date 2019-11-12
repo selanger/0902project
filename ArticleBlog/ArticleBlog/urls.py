@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,re_path,include
 from .views import *
-
+from Article.views import login,logout
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("index/",index),
@@ -30,5 +30,19 @@ urlpatterns = [
     # path("addArticle/",addArticle),
     # path("articleDetails/",articleDetails),
     re_path("articleDetails/(?P<id>\d+)/",articleDetails),
-    path("ckeditor/",include("ckeditor_uploader.urls"))
+    path("ckeditor/",include("ckeditor_uploader.urls")),
+    path("requsttest/",requsttest),
+    path("reqtest/",reqtest),
+    path("search/",search),
+    path("reqpost/",reqpost),
+    path("register/",register),
+    path("ajaxtest/",ajaxtest),
+    path("ajaxdemo/",ajaxdemo),
+    path("ajaxreq/",ajaxreq),
+    path("ajaxregister/",ajaxregister),
+    path("ajaxpost/",ajaxpost),
+    path("login/",login),
+    path("logout/",logout),
+    path("article/",include("Article.urls")),
+
 ]

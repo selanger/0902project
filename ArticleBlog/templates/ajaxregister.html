@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax注册</title>
+    <script src="/static/js/jquery.min.js"></script>
+</head>
+<body>
+
+<input type="text" id="username" name="username" placeholder="用户名"> <span style="color: red;" id="contenterror"></span>
+<br>
+<input type="password" id="password" name="password" placeholder="密码"> <br>
+{#<input type="button" value="注册">#}
+<input id="register" type="submit" value="注册">
+<p id = "content"></p>
+
+
+</body>
+
+<script>
+    $("#register").click(
+        function () {
+            //  获取数据
+            var username = $("#username").val();
+            var password = $("#password").val();
+
+            //  url 构建
+            //  var url = '/ajaxpost/?username='+username + "&password=" + password;  get请求传参
+            var url = '/ajaxpost/';
+            send_data = {    //  构建 post请求的数据对象
+                "username": username,
+                "password": password,
+                "csrfmiddlewaretoken": "{{ csrf_token }}"
+            };
+            // ajax的使用
+            $.ajax({
+                url: url,
+                type: "post",
+                data: send_data,   // 传递的数据  post才会用到
+                success: function (data) {
+                    console.log(data)
+                    $("#content").text(data["msg"])
+                },
+                error: function (error) {
+                    console.log(error)
+                    $("#content").text(error["statusText"])
+                }
+            })
+        }
+    )
+
+
+
+    $("#username").blur(
+        function () {
+            var username = $("#username").val();
+            var url = "/article/checkuser/?username=" + username;
+            $.ajax({
+                url:url,
+                type: "get",
+                data:"",
+                success:function (data) {
+                    console.log(data)
+                    $("#contenterror").text(data["msg"])
+                },
+                error:function (error) {
+                    console.log(error)
+                }
+            })
+        }
+    )
+
+
+
+
+</script>
+
+
+</html>
