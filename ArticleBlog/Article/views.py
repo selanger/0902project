@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse,HttpResponse,HttpResponseRedirect
 from .models import *
 from ArticleBlog.views import setPassword
+from django.core.paginator import Paginator
+
 
 # Create your views here.
 def checkuser(request):
@@ -36,6 +38,8 @@ def login(request):
                 ##  设置cookie
                 response.set_cookie("username",username,max_age=1200)
                 response.set_cookie("password",password)
+                request.session["username"] = username
+                request.session["password"] = password
                 return response
             # else:
             #     return HttpResponseRedirect("/login")
@@ -49,5 +53,31 @@ def logout(request):
 
     response =  HttpResponseRedirect("/login")
     response.delete_cookie("username")
+    ## 删除session
+    ##  {“name" :dsfsfsfds}
+    del request.session["username"]
     return response
+
+def searchtitle(request):
+    search_key = request.POST.get("keyboard")
+    if search_key:
+        article = Article.objects.filter(title__icontains=search_key).order_by("-date")
+
+    paginator = Paginator(article,6)
+    page_range = paginator.page_range
+    page_obj = paginator.page(1)
+    #
+    # number = page_obj.number
+    # start = number -3
+    # end = number + 2
+    # if number <=2:
+    #     start = 0
+    #     end = 5
+    # if number >= paginator.num_pages - 2:
+    #     end = paginator.num_pages
+    #     start = end - 5
+    # page_range = paginator.page_range[start:end]
+
+    return render(request,"newslistpic.html",locals())
+
 

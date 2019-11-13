@@ -25,7 +25,8 @@
         <div class="contenttop">
             <div class="logo f_l">个人博客模板古典系列之――江南墨卷</div>
             <div class="search f_r">
-                <form action="/e/search/index.php" method="post" name="searchform" id="searchform">
+                <form action="/searchtitle/" method="post"  id="searchform">
+                    {% csrf_token %}
                     <input name="keyboard" id="keyboard" class="input_text" value="请输入关键字"
                            style="color: rgb(153, 153, 153);"
                            onfocus="if(value=='请输入关键字'){this.style.color='#000';value=''}"
@@ -49,11 +50,11 @@
                         </li>
                         <li><a href="#">我的日记</a>
                             <ul>
-                                <li><a href="/newslistpic/">个人日记</a></li>
-                                <li><a href="/newslistpic/">学习笔记</a></li>
+                                <li><a href="/newslistpic/个人日记/1/">个人日记</a></li>
+                                <li><a href="/newslistpic/学习笔记/1/">学习笔记</a></li>
                             </ul>
                         </li>
-                        <li><a href="/newslistpic/">技术文章</a></li>
+                        <li><a href="/newslistpic/技术文章/1/">技术文章</a></li>
                         <li><a href="#">给我留言</a></li>
                     </ul>
                 </div>

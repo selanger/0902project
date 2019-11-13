@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,re_path,include
 from .views import *
-from Article.views import login,logout
+from Article.views import login,logout,searchtitle
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("index/",index),
@@ -24,7 +24,7 @@ urlpatterns = [
     path("about/",about,name="aboutnew"),
     path("listpic/",listpic),
     path("newslistpic/",newslistpic),
-    re_path("newslistpic/(?P<page>\d+)/",newslistpic),
+    re_path("newslistpic/(?P<type>\w+)/(?P<page>\d+)/",newslistpic),
     path("base/",base),
     path("fytest/",fytest),
     # path("addArticle/",addArticle),
@@ -43,6 +43,7 @@ urlpatterns = [
     path("ajaxpost/",ajaxpost),
     path("login/",login),
     path("logout/",logout),
+    path("searchtitle/",searchtitle),
     path("article/",include("Article.urls")),
 
 ]

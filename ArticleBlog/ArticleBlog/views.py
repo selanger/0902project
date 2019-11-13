@@ -1,10 +1,28 @@
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import render
 from  Article.models import *
 from django.core.paginator import Paginator
 
+## 登录验证装饰器
+def LoginVaild(func):
+    def inner(request,*args,**kwargs):
+        ##  需要校验用户的 cookie
+        username = request.COOKIES.get("username")
+        username_session = request.session.get("username")
+        password_session = request.session.get("password")
+        # print(password_session)
+        # print(username_session)
+        if username == username_session:
+            return func(request,*args,**kwargs)
+        else:
+            return HttpResponseRedirect("/login/")
+    return inner
+
+
+
 
 ## 首页
+@LoginVaild
 def index(request):
     """
     返回 最新的 6条数据
@@ -14,7 +32,10 @@ def index(request):
     :param request:
     :return:
     """
-    print (request.COOKIES.get("username"))
+    # print (request.COOKIES.get("username"))
+    # username = request.COOKIES.get("username")   ## 获取cookie
+    ### 校验cookie 校验cookie中是否有 username就可以
+    # if username:
     ## 最新的 6条数据
     newarticle = Article.objects.order_by("-date")[:6]
     ## 返回图文推荐   7条数据
@@ -23,17 +44,31 @@ def index(request):
     clickarticle = Article.objects.order_by("-click")[:12]
 
     return render(request,"index.html",locals())
-
+    # else:
+    #     return HttpResponseRedirect("/login/")
+@LoginVaild
 def about(request):
+
     return render(request,"about.html")
 
 def listpic(request):
+
     return render(request,"listpic.html")
 
-def newslistpic(request,page=1):
+def newslistpic(request,type,page=1):
+
+    """
+    获取指定类型的文章
+    :param request: 请求对象
+    :param page:    页码
+    :param type:    类型    个人日记    学习笔记   技术文章
+    :return:
+    """
+
     page = int(page)
     ## 查询数据
-    article = Article.objects.all()
+    # article = Article.objects.all()
+    article = Type.objects.filter(name=type).first().article_set.all()
     ## 返回数据
     paginator = Paginator(article,6)
     page_obj = paginator.page(page)
@@ -57,6 +92,9 @@ def newslistpic(request,page=1):
         start = end - 5
     page_range = paginator.page_range[start:end]
     return render(request,"newslistpic.html",locals())
+
+
+
 def base(request):
     return render(request,"base.html")
 

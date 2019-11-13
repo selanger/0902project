@@ -13,6 +13,8 @@ class Author(models.Model):
     age = models.IntegerField(verbose_name="年龄")
     email = models.EmailField(verbose_name="邮箱")
 
+    def __str__(self):
+        return self.name
     class Meta:
         db_table = "author"
 
@@ -21,6 +23,8 @@ class Author(models.Model):
 class Type(models.Model):
     name = models.CharField(max_length=32)
     description = models.TextField()
+    def __str__(self):
+        return self.name
     class Meta:
         db_table = "type"
 
@@ -40,6 +44,8 @@ class Article(models.Model):
 
     author = models.ForeignKey(to=Author,on_delete=models.CASCADE)
     type = models.ManyToManyField(to=Type)
+    def __str__(self):
+        return self.title
     class Meta:
         db_table = "article"
 
