@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}
+    商品页
+{% endblock %}
+{% block style %}
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/vue-resource.js"></script>
+{% endblock %}
+{% block content %}
+    {% verbatim %}
+    <div id="content">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>商品编号</th>
+                <th>商品名称</th>
+                <th>商品价格</th>
+                <th>商品数量</th>
+                <th>商品产地</th>
+                <th>商品保质期</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr v-for="one in goods_list">
+                <td>{{ one.goods_number }}</td>
+                <td>{{ one.goods_name }}</td>
+                <td>{{ one.goods_price }}</td>
+                <td>{{ one.goods_count }}</td>
+                <td>{{ one.goods_location }}</td>
+                <td>{{ one.goods_safe_data }}</td>
+                <td>{{ one.goods_pro_time }}</td>
+
+                <td>
+                    <button class="btn btn-primary">修改</button>
+                    <button class="btn btn-primary">下架</button>
+
+                </td>
+            </tr>
+
+
+            </tbody>
+            <tfoot>
+
+            </tfoot>
+        </table>
+        <ul style="float: right;margin-right: 50px;" class="pagination">
+
+
+            <li class="paginate_button page-item" v-for="page in page_range">
+                <a class='page-link' v-on:click="getpage(page)">{{ page }}</a>
+            </li>
+
+
+        </ul>
+
+    </div>
+    {% endverbatim %}
+{% endblock %}
+
+{% block script %}
+    <script>
+        Vue.use(VueResource);  // 指明 下面的vue内容使用的   vueResource
+        var vue = new Vue(
+            {
+                el: "#content",
+                data: {
+                    goods_list: [
+                        {
+                            "goods_number": "00001",
+                            "goods_name": "白菜",
+                            "goods_price": 1000,
+                            "goods_count": 100,
+                            "goods_location": "北京",
+                            "goods_safe_data": 10,
+                            "goods_pro_time": "2019-07-01"
+                        },
+                        {
+                            "goods_number": "00001",
+                            "goods_name": "白菜",
+                            "goods_price": 1000,
+                            "goods_count": 100,
+                            "goods_location": "北京",
+                            "goods_safe_data": 10,
+                            "goods_pro_time": "2019-07-01"
+                        },
+                        {
+                            "goods_number": "00001",
+                            "goods_name": "白菜",
+                            "goods_price": 1000,
+                            "goods_count": 100,
+                            "goods_location": "北京",
+                            "goods_safe_data": 10,
+                            "goods_pro_time": "2019-07-01"
+                        },
+                        {
+                            "goods_number": "00001",
+                            "goods_name": "白菜",
+                            "goods_price": 1000,
+                            "goods_count": 100,
+                            "goods_location": "北京",
+                            "goods_safe_data": 10,
+                            "goods_pro_time": "2019-07-01"
+                        },
+                    ],
+                    page_range:[1,2,3,4,5]
+                },
+                created:function () {
+                    // 发送请求
+                    url = "/goods_list_api/1/1/",
+                    //  相当于  ajax 的发get请求，then 相当于ajax 中的  success
+                    this.$http.get(url).then(
+                        function (data) {
+                            console.log(data.data.data)
+                            this.goods_list = data.data.data
+                            this.page_range = data.data.page_range
+                        },  //   相当于  success
+                        function (error) {
+                            console.log(error)
+                        }, //  相当于  error
+                    )
+                },
+                methods:{
+                    "getpage":function (page) {
+                        console.log(page)
+                        url = "/goods_list_api/1/" + page,
+                    //  相当于  ajax 的发get请求，then 相当于ajax 中的  success
+                    this.$http.get(url).then(
+                        function (data) {
+                            console.log(data.data.data)
+                            this.goods_list = data.data.data
+                            this.page_range = data.data.page_range
+                        },  //   相当于  success
+                        function (error) {
+                            console.log(error)
+                        }, //  相当于  error
+                    )
+
+                    }
+                }
+            }
+        )
+
+
+    </script>
+{% endblock %}
+
+

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue的使用</title>
+    <script src="/static/js/vue.min.js"></script>
+</head>
+<body>
+{# 标识 下面的内容不使用django的语法#}
+{% verbatim %}
+<div id="content">
+    <p>
+    数据的绑定{{ name }}
+    </p>
+    <hr>
+
+    <p v-bind:id="userid">
+        属性的绑定
+    </p>
+    <hr>
+    <p v-if="flag">
+        判断绑定
+    </p>
+    <hr>
+
+    <p v-for = "one in pythonlist">
+        循环绑定 {{ one }}
+    </p>
+    <hr>
+
+    <p v-on:click="alert">
+        事件的绑定
+    </p>
+    <hr>
+</div>
+{% endverbatim %}
+<script>
+    var vue = new Vue(
+        {
+            el:"#content",
+            data:{
+                name:"zhangsan",
+                age:123,
+                style:"color:red;",
+                userid:1,
+                flag:0,
+                pythonlist:['fdsfsf','fdsfdsf','xcxzcc'],
+            },
+            methods:{
+                "alert":function () {
+                    alert("hello world")
+                }
+            },
+
+        }
+    )
+</script>
+
+
+</body>
+</html>

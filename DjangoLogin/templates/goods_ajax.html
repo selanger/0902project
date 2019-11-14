@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+</head>
+<body>
+<div id="content">
+
+</div>
+
+<script>
+    // 写  ajax  发送请求  获取数据   将数据 渲染到指定的 div
+    $.ajax({
+        url:"http://127.0.0.1:8000/goods_list_api/1/1/",
+        type:"get",
+        data:"",
+        success:function (data) {
+            console.log(data.data)
+            for (var i in data.data){
+                console.log(data.data[i]["goods_name"])
+                var idata = "<p>" + data.data[i]["goods_name"] + "</p>"
+                $("#content").append(idata)
+            }
+        },
+        error:function (data) {
+            console.log(data)
+        }
+    })
+
+
+
+
+
+</script>
+
+
+</body>
+</html>

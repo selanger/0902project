@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}
+    商品页
+{% endblock %}
+{% block content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>商品编号</th>
+                <th>商品名称</th>
+                <th>商品价格</th>
+                <th>商品数量</th>
+                <th>商品产地</th>
+                <th>商品保质期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for one in goods_list %}
+            <tr>
+                <td>{{ one.goods_number }}</td>
+                <td>{{ one.goods_name }}</td>
+                <td>{{ one.goods_price }}</td>
+                <td>{{ one.goods_count }}</td>
+                <td>{{ one.goods_location }}</td>
+                <td>{{ one.goods_safe_data }}</td>
+                <td>{{ one.goods_pro_time }}</td>
+
+                <td>
+                    <button class="btn btn-primary">修改</button>
+{#                    <button class="btn btn-danger">下架</button>#}
+                    {% if one.goods_status == 1 %}
+                        <a class="btn btn-warning" href="/goods_status/down/{{ one.id }}">下架</a>
+                    {% else %}
+                        <a class="btn btn-primary" href="/goods_status/up/{{ one.id }}">上架</a>
+                    {% endif %}
+
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+        <tfoot>
+
+        </tfoot>
+    </table>
+    <ul style="float: right;margin-right: 50px;" class="pagination">
+
+    {% for page in goods_obj.page_range %}
+        <li class="paginate_button page-item">
+        <a class = 'page-link' href="/goods_list/1/{{ page }}/">{{ page }}</a>
+       </li>
+    {% endfor %}
+
+    </ul>
+
+
+
+
+
+
+{% endblock %}
