@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include,re_path
 from LoginUser.views import *
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,5 +25,17 @@ urlpatterns = [
     re_path("goods_list/(?P<type>\d{0,1})/(?P<page>\d+)/",goods_list),
     re_path("goods_list_api/(?P<type>\d{0,1})/(?P<page>\d+)/",goods_list_api),
     re_path("goods_status/(?P<type>\w+)/(?P<id>\d+)/",goods_status),
-    #     # path("add_goods/",add_goods),
+    path("goodsview/",csrf_exempt(GoodsView.as_view())),
+    path("personinfo/",PersonInfo),
+
 ]
+
+from rest_framework import routers
+router = routers.DefaultRouter()     ## 定义一个  路由集合
+router.register("goods",GoodsViewsSet)    ### restful 视图收集路由
+router.register("user",UserViewsSet)    ### restful 视图收集路由
+
+urlpatterns += [
+    re_path("^API/", include(router.urls))
+]
+

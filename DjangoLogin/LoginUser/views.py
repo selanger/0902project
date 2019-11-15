@@ -66,6 +66,7 @@ def login(request):
                 response = HttpResponseRedirect("/loginuser/index/")
                 response.set_cookie("email",email)
                 response.set_cookie("username",user.username)
+                response.set_cookie("user_id",user.id)
                 request.session["email"] = email
                 return response
             else:
@@ -105,10 +106,10 @@ def goods_list(request,type,page=1):
     ##
     goods_obj = Paginator(goods,10)  ## 每页10条
     goods_list = goods_obj.page(page)
-    # return render(request,'goods_list.html',locals())
+    return render(request,'goods_list.html',locals())
     # return render(request,"goods_ajax.html")
     # return render(request,"vuedemo.html")
-    return render(request,"gooslistvue.html")
+    # return render(request,"gooslistvue.html")
 
 
 def goods_list_api(request,type,page=1):
@@ -147,17 +148,101 @@ def goods_list_api(request,type,page=1):
     }
     return JsonResponse(result)
 
+from django.views import View
+import json
+### 类视图
+class GoodsView(View):
+
+    def __init__(self):
+        super(GoodsView, self).__init__()
+        self.result = {
+            "methods": "get请求",
+            "data": "",
+            "version": "v1",
+            "msg":"请求成功"
+        }
+        self.goods_obj = Goods
+
+    ##处理get请求
+    def get(self,request):
+        id = request.GET.get("id")
+        if id:
+            ## 查找指定id的数据
+            goods = self.goods_obj.objects.get(id=id)
+            data = {
+                "goods_number": goods.goods_number,
+                "goods_name": goods.goods_name,
+                "goods_price": goods.goods_price,
+                "goods_count": goods.goods_count,
+                "goods_location": goods.goods_location,
+                "goods_safe_data": goods.goods_safe_data,
+                "goods_pro_time": goods.goods_pro_time,
+                "goods_status": goods.goods_status,
+            }
 
 
+        else:
+            goods = self.goods_obj.objects.all()
+            data = []
+            for one in goods:
+                data.append({
+                    "goods_number": one.goods_number,
+                    "goods_name": one.goods_name,
+                    "goods_price": one.goods_price,
+                    "goods_count": one.goods_count,
+                    "goods_location": one.goods_location,
+                    "goods_safe_data": one.goods_safe_data,
+                    "goods_pro_time": one.goods_pro_time,
+                    "goods_status": one.goods_status,
+                })
 
+        self.result["data"] = data
+        return JsonResponse(self.result)
 
+    ##处理post请求
+    def post(self,request):
+        ## 获取数据，保存数据
+        data = request.POST
+        goods = Goods()
+        goods.goods_number = data.get("goods_number")
+        goods.goods_name = data.get("goods_name")
+        goods.goods_price = data.get("goods_price")
+        goods.goods_count = data.get("goods_count")
+        goods.goods_location = data.get("goods_location")
+        goods.goods_safe_data = data.get("goods_safe_data")
+        goods.save()
 
+        # result = {"methods": "post请求"}
+        self.result["methods"] = "post"
+        self.result["data"] = {"id":goods.id}
+        self.result["msg"] ="数据添加成功"
+        return JsonResponse(self.result)
+    ## 处理put请求
+    def put(self,request):
+        ## 获取数据  进行更新
+        # data = request.POST    put 请求的数据，不在request.GET或者POST中
+        data = request.body     ## bytes 类型
+        data = json.loads(data.decode())
+        id = data.get("id")
+        goods_name = data.get("goods_name")
+        ## 更新  操作   将指定id的商品名字修改
+        Goods.objects.filter(id=id).update(goods_name=goods_name)
+        self.result = {"methods": "put请求"}
+        self.result["data"]={"id":id}
+        self.result["msg"] = "数据修改完成"
 
-
-
-
-
-
+        return JsonResponse(self.result)
+    ## 处理delete请求
+    def delete(self,request):
+        data = request.body
+        data = json.loads(data.decode())
+        id = data.get("id")
+        ## 删除
+        Goods.objects.filter(id = id).delete()
+        self.result = {"methods": "delete请求"}
+        self.result["data"]={"id":id}
+        self.result["msg"] = "数据删除完成"
+        return JsonResponse(self.result)
 
 # 修改商品的状态
 def goods_status(request,type,id):
@@ -189,23 +274,6 @@ def goods_status(request,type,id):
     print (url)
     return HttpResponseRedirect(url)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def base(request):
-#     return render(request,"base.html")
-
 import random
 def add_goods(request):
     ## 增加100 条
@@ -226,3 +294,44 @@ def add_goods(request):
         goods.save()
 
     return HttpResponse("增加数据")
+
+from rest_framework import viewsets
+from .serializer import GoodsSerializer,UserSerializer
+class GoodsViewsSet(viewsets.ModelViewSet):
+    queryset = Goods.objects.all()    ## 固定的写法
+    serializer_class = GoodsSerializer          ##  过滤器
+
+
+
+class UserViewsSet(viewsets.ModelViewSet):
+    queryset = LoginUser.objects.all()    ## 固定的写法
+    serializer_class = UserSerializer          ##  过滤器
+
+
+### 个人中心
+@LoginValid
+def PersonInfo(request):
+    ## 查询用户的信息
+    ## 登录的时候获取用户名  邮箱
+    ## 查询
+    user_id = request.COOKIES.get("user_id")
+    user = LoginUser.objects.get(id = user_id)
+    if request.method == "POST":
+        print (request.POST)
+        data = request.POST
+        ## 更新数据
+        user.username = data.get("username")
+        user.phone_number = data.get("phone_number")
+        user.age = data.get("age")
+        user.gender = data.get("gender")
+        user.address = data.get("address")
+        # user.photo = data.get("photo")
+
+        if request.FILES.get("photo"):
+            user.photo = request.FILES.get("photo")
+        user.save()
+        user = LoginUser.objects.get(id=user_id)
+
+    return render(request,"personal_info.html",locals())
+
+
