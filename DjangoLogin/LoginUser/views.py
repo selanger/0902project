@@ -77,7 +77,7 @@ def login(request):
     return render(request,"login.html",locals())
 
 
-@LoginValid
+# @LoginValid
 def index(request):
     return render(request,"index.html")
 

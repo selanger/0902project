@@ -1,0 +1,60 @@
+{% extends "seller/base.html" %}
+{% block title %}
+    个人中心
+{% endblock %}
+
+{% block content %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table class="table">
+            <tr>
+                <td rowspan="3" style="width: 300px;">
+                    <img style="width:300px;height: 300px ;" src="/static/{{ user.photo }}" alt="">
+                    <input type="file" name="photo">
+                </td>
+                <th>邮箱</th>
+                <td>
+                    <input type="text" name="email" value="{{ user.email }}" disabled>
+                </td>
+                <th>用户名</th>
+                <td>
+                    <input type="text" name="username" value="{{ user.username }}">
+                </td>
+            </tr>
+            <tr>
+                <th>手机号</th>
+                <td>
+                    <input type="text" name="phone_number" value="{{ user.phone_number }}">
+                </td>
+                <th>年龄</th>
+                <td>
+                    <input type="text" name="age" value="{{ user.age }}">
+                </td>
+            </tr>
+            <tr>
+                <th>性别</th>
+                <td>
+{#                    <input type="text" name="gender" value="{{ user.get_gender_display }}">#}
+                    <select name="gender" id="" >
+                        <option value="0">女</option>
+                        <option value="1">男</option>
+                        <option value="{{ user.gender }}" selected hidden>{{ user.get_gender_display }}</option>
+                    
+                    </select>
+
+                </td>
+                <th>地址</th>
+                <td>
+                    <input type="text" name="address" value="{{ user.address }}">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" style="text-align: center">
+                    <input type="submit" class="btn btn-primary" value="完善个人信息">
+                </td>
+            </tr>
+
+        </table>
+    </form>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "seller/base.html" %}
+{% block title %}
+    增加商品
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">添加商品</h6>
+        </div>
+        <div class="card-body">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" name="goods_number" placeholder="商品编号" class="form-control form-control-user">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="goods_name" placeholder="商品名字" class="form-control form-control-user">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="goods_price" placeholder="商品价格" class="form-control form-control-user">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="goods_count" placeholder="商品数量" class="form-control form-control-user">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="goods_location" placeholder="商品生成地" class="form-control form-control-user">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="goods_safe_data" placeholder="商品保质期" class="form-control form-control-user">
+                </div>
+                <div class="form-group">
+{#                    <input type="text" name="goods_number" placeholder="商品类型" class="form-control form-control-user">#}
+                    <select name="goods_type" id="" class="form-control form-control-user">
+                        {% for one in goods_type %}
+                            <option value="{{ one.id }}">{{ one.type_lebal }}</option>
+
+                        {% endfor %}
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="file" name="goodsfile" class="form-control form-control-user">
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="增加商品" class="btn btn-primary btn-user btn-block">
+                </div>
+
+            </form>
+
+
+        </div>
+    </div>
+
+
+{% endblock %}
