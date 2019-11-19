@@ -41,28 +41,29 @@
         </div>
     </div>
 
-    {% for onetype in goods_type %}
+
+    {% for one in types %}
         <div class="list_model">
 
             <div class="list_title clearfix">
-                <h3 class="fl" id="model01">{{onetype.type_lebal}}</h3>
+                <h3 class="fl" id="model01">{{one.type.type_lebal}}</h3>
                 <div class="subtitle fl">
                     <span>|</span>
                     <a href="#">鲜芒</a>
                     <a href="#">加州提子</a>
                     <a href="#">亚马逊牛油果</a>
                 </div>
-                <a href="#" class="goods_more fr" id="fruit_more">查看更多 ></a>
+                <a href="/buyer/goodslist/?keywords={{ one.type.id }}&req_type=findall" class="goods_more fr" id="fruit_more">查看更多 ></a>
             </div>
 
             <div class="goods_con clearfix">
-                <div class="goods_banner fl"><img src="/static/{{ onetype.type_picture }}"></div>
+                <div class="goods_banner fl"><img src="/static/{{ one.type.type_picture }}"></div>
                 <ul class="goods_list fl">
 
-                    {% for good in onetype.goods_set.all%}
+                    {% for good in one.goods%}
                     <li>
-                        <h4><a href="#">{{ good.goods_name }}</a></h4>
-                        <a href="#"><img src="/static/{{ good.goods_picture }}"></a>
+                        <h4><a href="/buyer/goodsdetail/{{ good.id }}/">{{ good.goods_name }}</a></h4>
+                        <a href="/buyer/goodsdetail/{{ good.id }}/"><img src="/static/{{ good.goods_picture }}"></a>
                         <div class="prize">¥ {{ good.goods_price }}</div>
                     </li>
                     {% endfor %}

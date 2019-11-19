@@ -42,6 +42,7 @@ class Goods(models.Model):
     goods_picture = models.ImageField(upload_to="img",default="img/gtl01.jpg")
     goods_type = models.ForeignKey(to=GoodsType,on_delete=models.CASCADE)
     goods_store = models.ForeignKey(to=LoginUser,on_delete=models.CASCADE)
+    goods_description = models.TextField(verbose_name="商品描述",default="good")
 
     class Meta:
         db_table = "goods"
