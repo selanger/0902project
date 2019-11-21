@@ -32,5 +32,28 @@ class OrderInfo(models.Model):
         verbose_name = "订单详情表"
 
 
+"""
+- id
+- 商品的名字
+- 商品的数量
+- 商品的单价
+- 买家
+- 店铺名
+- 单件商品的总价
+"""
+class Cart(models.Model):
+    goods = models.ForeignKey(to=Goods,on_delete=models.CASCADE,verbose_name="商品表外键")
+    goods_number = models.IntegerField(verbose_name="商品数量")
+    cart_user = models.ForeignKey(to=LoginUser,on_delete=models.CASCADE,verbose_name="买家")
+    goods_total = models.FloatField(verbose_name="单件商品的总价")
+
+    class Meta:
+        db_table = "cart"
+        verbose_name = "购物车表"
+
+
+
+
+
 
 

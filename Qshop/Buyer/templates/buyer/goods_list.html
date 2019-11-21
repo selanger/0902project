@@ -66,7 +66,7 @@
                     <div class="operate">
                         <span class="prize">￥{{ one.goods_price }}</span>
                         <span class="unit">{{ one.goods_price }}/500g</span>
-                        <a href="#" class="add_goods" title="加入购物车"></a>
+                        <a href="#" class="add_goods" id="{{ one.id }}" onclick="add_cart(this)" title="加入购物车"></a>
                     </div>
                 </li>
                 {% endfor %}
@@ -86,4 +86,35 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block script %}
+    <script>
+
+    function add_cart(obj){
+        console.log(111111111)
+              var goods_id = obj.id;
+
+            // ajax
+            // 构建请求参数
+            send_data = {
+                "goods_id":goods_id,
+                "csrfmiddlewaretoken":"{{ csrf_token }}"
+            }
+            $.ajax({
+                url:"/buyer/add_cart/",
+                type:'post',
+                data:send_data,
+                success:function (data) {
+                    console.log(data);
+                    alert(data.msg)
+                },
+                error:function (error) {
+                    console.log(error)
+                }
+
+            })
+
+    }
+    </script>
 {% endblock %}

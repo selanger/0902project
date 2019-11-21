@@ -60,7 +60,7 @@
             <div class="total">总价：<em><span id="total">{{ goods.goods_price }}</span> 元</em></div>
 			<div class="operate_btn">
 				<a href="javascript:;" class="buy_btn" id="buynow">立即购买</a>
-				<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+				<a href="javascript:;" class="add_cart" id="add_cart" onclick="add_cart()">加入购物车</a>
 			</div>
 		</div>
 	</div>
@@ -147,5 +147,37 @@
 
 
 
+    </script>
+
+    <script>
+
+    function add_cart(){
+        console.log(111111111)
+              var goods_id = {{ goods.id }};
+              count = $("#num").val()
+
+
+            // ajax
+            // 构建请求参数
+            send_data = {
+                "goods_id":goods_id,
+                "count":count,
+                "csrfmiddlewaretoken":"{{ csrf_token }}"
+            }
+            $.ajax({
+                url:"/buyer/add_cart/",
+                type:'post',
+                data:send_data,
+                success:function (data) {
+                    console.log(data);
+                    alert(data.msg)
+                },
+                error:function (error) {
+                    console.log(error)
+                }
+
+            })
+
+    }
     </script>
 {% endblock %}

@@ -13,5 +13,9 @@ urlpatterns = [
     path("user_center_order/",user_center_order),
     path("user_center_site/",user_center_site),
     path("place_order/",place_order),
+    path("payorder/",payorderAli),
+    path("payresult/",payresult),
+    path("add_cart/",add_cart),
+    path("place_order_more/",place_order_more),
     re_path("goodsdetail/(?P<goods_id>\d+)/",goodsdetail),
 ]

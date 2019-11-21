@@ -39,28 +39,30 @@
 			<li class="col04">数量</li>
 			<li class="col05">小计</li>
 		</ul>
+        {% for one in payorder.orderinfo_set.all %}
 		<ul class="goods_list_td clearfix">
 			<li class="col01">1</li>
-			<li class="col02"><img src="/static/{{ goods.goods_picture }}"></li>
-			<li class="col03">{{ goods.goods_name }}</li>
+			<li class="col02"><img src="/static/{{ one.goods.goods_picture }}"></li>
+			<li class="col03">{{ one.goods.goods_name }}</li>
 			<li class="col04">500g</li>
-			<li class="col05">{{ orderinfo.goods_price }}元</li>
-			<li class="col06">{{ orderinfo.goods_count }}</li>
-			<li class="col07">{{ orderinfo.goods_total_price }}元</li>
+			<li class="col05">{{ one.goods_price }}元</li>
+			<li class="col06">{{ one.goods_count }}</li>
+			<li class="col07">{{ one.goods_total_price }}元</li>
 		</ul>
+        {% endfor %}
 	</div>
 
 	<h3 class="common_title">总金额结算</h3>
 
 	<div class="common_list_con clearfix">
 		<div class="settle_con">
-			<div class="total_goods_count">共<em>{{ orderinfo.goods_count }}</em>件商品，总金额<b>{{ orderinfo.goods_total_price }}元</b></div>
+			<div class="total_goods_count">共<em>{{ order_count }}</em>件商品，总金额<b>{{ payorder.order_total }}元</b></div>
 			<div class="transit">运费：<b>0元</b></div>
-			<div class="total_pay">实付款：<b>{{ orderinfo.goods_total_price }}元</b></div>
+			<div class="total_pay">实付款：<b>{{ payorder.order_total }}元</b></div>
 		</div>
 	</div>
 
 	<div class="order_submit clearfix">
-		<a href="javascript:;" id="order_btn">提交订单</a>
+		<a href="/buyer/payorder/?order_id={{ payorder.id }}" id="order_btn">提交订单</a>
 	</div>
 {% endblock %}

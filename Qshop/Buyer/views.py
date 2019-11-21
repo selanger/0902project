@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from Seller.models import *
 from Seller.views import setPassword
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,JsonResponse
 from .models import *
 
 # Create your views here.
@@ -155,7 +155,11 @@ def person_info(request):
 ## 购物车
 @LoginValid
 def cart(request):
-    return render(request,"buyer/cart.html")
+    ## 登录用户的购物车
+    user_id = request.COOKIES.get("user_id")
+    ## 查找用户的购物车内容，  按照时间逆序
+    cart = Cart.objects.filter(cart_user=LoginUser.objects.get(id=user_id)).all().order_by("-id")
+    return render(request,"buyer/cart.html",locals())
 
 # 订单页面
 @LoginValid
@@ -198,3 +202,107 @@ def place_order(request):
 
 
     return render(request,"buyer/place_order.html",locals())
+
+
+@LoginValid
+def place_order_more(request):
+    # 生成订单
+    # 获取 购物车id
+    user_id = request.COOKIES.get("user_id")
+    data = request.POST   ## 字典
+    data = data.items()    ### 生成器
+    res = []   ## 选中的购物车id
+    for key,value in data:
+        if key.startswith("cartid"):
+            res.append(value)
+    user = LoginUser.objects.get(id = user_id)
+
+    ## 生成订单  2件    1笔订单   2笔订单详情
+    if len(res) != 0:
+        payorder = PayOrder()
+        payorder.order_number = str(time.time()).replace(".", "")
+        payorder.order_status = 1  ## 未支付
+        payorder.order_total = 0
+        payorder.order_user = user
+        payorder.save()
+
+        order_total = 0
+        order_count = 0
+        ## 订单详情
+        for c_id in res:  ## c_id  购物车id
+            cart = Cart.objects.get(id = c_id)
+            goods = cart.goods
+            orderinfo = OrderInfo()
+            orderinfo.order_id = payorder
+            orderinfo.goods = goods
+            orderinfo.goods_price = goods.goods_price
+            orderinfo.goods_count = cart.goods_number
+            orderinfo.goods_total_price = cart.goods_total
+            orderinfo.save()
+            order_total += cart.goods_total
+            order_count += cart.goods_number
+
+        payorder.order_total = order_total
+        payorder.save()
+
+    return render(request,"buyer/place_order.html",locals())
+
+
+
+
+from django.http import HttpResponse
+from Qshop.settings import alipay
+def payorderAli(request):
+    ## 完成付款
+    ## 实例化订单
+    order_id = request.GET.get("order_id")   ### 订单id
+    payorder = PayOrder.objects.get(id=order_id)
+    order_string = alipay.api_alipay_trade_page_pay(
+        subject='生鲜交易',  ## 交易主题
+        out_trade_no= payorder.order_number,  ## 订单号
+        total_amount= str(payorder.order_total),  ## 交易总金额  需要是一个string
+        return_url="http://127.0.0.1:8000/buyer/payresult/",  ## 返回的路径
+        notify_url=None  ## 通知路径
+    )
+    ## 发送请求
+    ## 构建一个请求url
+    result = "https://openapi.alipaydev.com/gateway.do?" + order_string
+    return HttpResponseRedirect(result)
+
+def payresult(request):
+    out_trade_no = request.GET.get("out_trade_no")   ### 订单号
+    payorder = PayOrder.objects.get(order_number=out_trade_no)
+    payorder.order_status = 2
+    payorder.save()
+
+    return render(request,"buyer/payresult.html",locals())
+
+### 添加购物车
+@LoginValid
+def add_cart(request):
+    """
+     保存数据到 购物车表
+    :param request:
+        商品id
+        商品的数量
+    :return:
+    """
+
+    goods_id = request.POST.get("goods_id")
+    count = request.POST.get("count",1)
+    user_id = request.COOKIES.get("user_id")
+    goods = Goods.objects.get(id = goods_id)
+    ## 保存
+    cart = Cart()
+    cart.goods = goods
+    cart.goods_number = int(count)
+    cart.cart_user = LoginUser.objects.get(id=user_id)
+    cart.goods_total = int(count) * goods.goods_price
+    cart.save()
+    return JsonResponse({"code":10000,"msg":"添加购物成功"})
+
+
+
+
+
+
