@@ -25,13 +25,13 @@
                 <li class="col05">{{ one.goods.goods_price }}元</li>
                 <li class="col06">
                     <div class="num_add">
-                        <a href="javascript:;" class="add fl">+</a>
-                        <input type="text" class="num_show fl" value="{{ one.goods_number }}">
-                        <a href="javascript:;" class="minus fl">-</a>
+                        <a href="javascript:;" class="add fl" onclick="jisuan({{ one.id }},'add')">+</a>
+                        <input type="text" class="num_show fl" id ="num_show_{{ one.id }}" value="{{ one.goods_number }}">
+                        <a href="javascript:;" class="minus fl" onclick="jisuan({{ one.id }},'reduce')">-</a>
                     </div>
                 </li>
-                <li class="col07">{{ one.goods_total }}元</li>
-                <li class="col08"><a href="javascript:;">删除</a></li>
+                <li class="col07" id ="count_{{ one.id }}">{{ one.goods_total }}元</li>
+                <li class="col08"><a href="/buyer/delete_cart/?cart_id={{ one.id }}">删除</a></li>
             </ul>
         {% endfor %}
 
@@ -52,6 +52,34 @@
 
 {% block script %}
     <script>
+    function getdata(id,type) {
+        var result = null;
+        $.ajax({
+            url:"/buyer/change_cart/?cart_id="+id + "&type=" + type,
+            type:"get",
+            data:"",
+            success:function (result) {
+                if (result.code == 10000){
+                    console.log(result.data.goods_number);
+                    // 设置值
+                    document.getElementById("num_show_" + id).value = result.data.goods_number;
+                    var data = document.getElementById("count_" + id).innerHTML = result.data.goods_total;
+
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+
+    }
+
+    function jisuan(id,type){
+        //var domid = "num_show_" + id
+        //var num = document.getElementById(domid).value
+        getdata(id,type)
+    }
+
 
         $("#all_box").click(
             function () {

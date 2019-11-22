@@ -16,6 +16,8 @@ urlpatterns = [
     path("payorder/",payorderAli),
     path("payresult/",payresult),
     path("add_cart/",add_cart),
+    path("change_cart/",change_cart),
+    path("delete_cart/",delete_cart),
     path("place_order_more/",place_order_more),
     re_path("goodsdetail/(?P<goods_id>\d+)/",goodsdetail),
 ]

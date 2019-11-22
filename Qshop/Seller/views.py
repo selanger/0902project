@@ -48,6 +48,8 @@ def register(request):
                 if flag:
                     result = "邮箱已经注册，去登录"
                 else:
+                    ## 获取验证码   然后比较验证码是否一致
+                    ## 从数据库中查询到验证码
                     LoginUser.objects.create(email =email,username=email,
                                              password=setPassword(password),user_type=0)
                     result = "注册成功"
@@ -183,3 +185,24 @@ def goods_add(request):
         goods.save()
 
     return render(request,"seller/goodsadd.html",locals())
+
+from django.http import JsonResponse
+from sdk.sendDD import senddingding
+import random
+def get_code(request):
+    result = {"code":10000,"msg":""}
+    ### 发送请求  获取验证码
+    """(content = "",isAtAll= True/False,"atMobiles":[])"""
+    ### 随机4位数
+    code = random.randint(1000,9999)
+    params = {
+        "content":"您的验证码为%s,打死不要告诉别人!!!" % code,
+        "atMobiles":[],
+        "isAtAll":True
+    }
+    try:
+        senddingding(params)
+        result = {"code": 10000, "msg": "发送验证码成功"}
+    except:
+        result = {"code": 10001, "msg": "发送验证码失败"}
+    return JsonResponse(result)

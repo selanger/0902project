@@ -39,6 +39,17 @@
                 <div class="form-group">
                   <input type="email" name ="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="邮箱">
                 </div>
+
+              <div class="form-group row">
+                  <div class="col-sm-7 mb-3 mb-sm-0">
+                    <input type="password"  name ="code" class="form-control form-control-user" id="exampleInputPassword" placeholder="验证码">
+                  </div>
+                  <div class="col-sm-5">
+                    <input type="button" class="btn btn-warning btn-user btn-block" id="get_code" value="获取验证码">
+                  </div>
+                </div>
+
+
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
                     <input type="password"  name ="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="密码">
@@ -59,7 +70,7 @@
               <div class="text-center">
                 <a class="small" href="/seller/login/">已有账号，去登录</a>
               </div>
-                <p style="color: red;text-align: center">{{ result }}</p>
+                <p style="color: red;text-align: center" id="content">{{ result }}</p>
             </div>
           </div>
         </div>
@@ -77,6 +88,29 @@
 
   <!-- Custom scripts for all pages-->
   <script src="/static/seller/js/sb-admin-2.min.js"></script>
+  <script>
+      $("#get_code").click(
+          function () {
+              $.ajax({
+                  url:"/seller/get_code/",
+                  type:"get",
+                  data:"",
+                  success:function (data) {
+                      console.log(data)
+                      $("#content").text(data.msg)
+                  },
+                  error:function (error) {
+                      console.log(error)
+                  }
+              })
+          }
+      )
+
+
+
+  </script>
+
+
 
 </body>
 

@@ -46,6 +46,7 @@ class Cart(models.Model):
     goods_number = models.IntegerField(verbose_name="商品数量")
     cart_user = models.ForeignKey(to=LoginUser,on_delete=models.CASCADE,verbose_name="买家")
     goods_total = models.FloatField(verbose_name="单件商品的总价")
+    payorder = models.CharField(default='0',verbose_name="订单表的订单号",max_length=32)
 
     class Meta:
         db_table = "cart"

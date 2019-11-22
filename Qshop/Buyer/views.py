@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render
 from Seller.models import *
 from Seller.views import setPassword
@@ -152,19 +153,32 @@ def goodsdetail(request,goods_id):
 @LoginValid
 def person_info(request):
     return render(request,"buyer/person_info.html")
+
 ## 购物车
 @LoginValid
 def cart(request):
     ## 登录用户的购物车
     user_id = request.COOKIES.get("user_id")
     ## 查找用户的购物车内容，  按照时间逆序
-    cart = Cart.objects.filter(cart_user=LoginUser.objects.get(id=user_id)).all().order_by("-id")
+    ## 查找用户的所有的待支付的购物车内容
+    ## 查询到待支付的订单号
+    order_numer = PayOrder.objects.filter(order_user=LoginUser.objects.get(id=user_id),
+                                          order_status=1).values("order_number")
+
+    # cart = Cart.objects.filter(cart_user=LoginUser.objects.get(id=user_id)).all().order_by("-id")
+
+    cart = Cart.objects.filter(Q(payorder__in=order_numer) | Q(payorder = "0")).all().order_by("-id")
+    print (cart)
     return render(request,"buyer/cart.html",locals())
 
 # 订单页面
 @LoginValid
 def user_center_order(request):
-    return render(request,"buyer/user_center_order.html")
+    ## 返回登录用户订单
+    user_id = request.COOKIES.get("user_id")
+
+    payorder = PayOrder.objects.filter(order_user=LoginUser.objects.get(id=user_id)).all().order_by("order_status")
+    return render(request,"buyer/user_center_order.html",locals())
 
 ## 收货地址
 @LoginValid
@@ -242,6 +256,10 @@ def place_order_more(request):
             order_total += cart.goods_total
             order_count += cart.goods_number
 
+            cart.payorder = payorder.order_number
+            cart.save()
+
+
         payorder.order_total = order_total
         payorder.save()
 
@@ -292,17 +310,57 @@ def add_cart(request):
     count = request.POST.get("count",1)
     user_id = request.COOKIES.get("user_id")
     goods = Goods.objects.get(id = goods_id)
-    ## 保存
-    cart = Cart()
-    cart.goods = goods
-    cart.goods_number = int(count)
-    cart.cart_user = LoginUser.objects.get(id=user_id)
-    cart.goods_total = int(count) * goods.goods_price
-    cart.save()
+    user = LoginUser.objects.get(id=user_id)
+    ## 增加商品数量
+    ## 条件：  1. 用户  2. 商品   3.购物内容的状态
+    has_cart = Cart.objects.filter(goods=goods,cart_user=user,payorder='0').first()
+    if has_cart:
+        ##已经有
+        has_cart.goods_number += int(count)
+        has_cart.goods_total += int(count) * goods.goods_price
+        has_cart.save()
+    else:
+        ## 没有
+        ## 保存
+        cart = Cart()
+        cart.goods = goods
+        cart.goods_number = int(count)
+        cart.cart_user = user
+        cart.goods_total = int(count) * goods.goods_price
+        cart.save()
     return JsonResponse({"code":10000,"msg":"添加购物成功"})
 
 
+## 删除购物车内容
+def delete_cart(request):
+    ### 获取购物车id
+    cart_id = request.GET.get("cart_id")
+    Cart.objects.filter(id =cart_id).delete()
+    return HttpResponseRedirect("/buyer/cart/")
 
+def change_cart(reuqest):
+    result = {"code":10001,"msg":""}
+    ### 获取购物车id
+    ## 每次请求，数量加1
+    cart_id = reuqest.GET.get("cart_id")
+    type = reuqest.GET.get("type")  ###   add(加)   reduce(减）
+    cart = Cart.objects.filter(id = cart_id).first()
+    if type == "add":
+        cart.goods_number += 1
+        cart.goods_total += cart.goods.goods_price
+    else:
+        cart.goods_number -= 1
+        cart.goods_total -= cart.goods.goods_price
+    try:
+        cart.save()
+        data = {
+            "goods_number":cart.goods_number,
+            "goods_total":cart.goods_total,
+        }
+        result = {"code":10000,"msg":"保存成功","data":data}
+    except:
+        result=  {"code":10001,"msg":"保存失败"}
 
+    return JsonResponse(result)
 
 
