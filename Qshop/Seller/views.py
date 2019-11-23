@@ -26,6 +26,7 @@ def LoginValid(func):
         else:
             return HttpResponseRedirect("/seller/login/")
     return inner
+import datetime
 ## 注册
 def register(request):
     """
@@ -37,8 +38,9 @@ def register(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         repassword = request.POST.get("repassword")
+        code = request.POST.get("code")
         ## 判空
-        if email and password and repassword:
+        if email and password and repassword and code:
             ## 不为空
             if password != repassword:
                 result = "密码不一致"
@@ -48,11 +50,24 @@ def register(request):
                 if flag:
                     result = "邮箱已经注册，去登录"
                 else:
-                    ## 获取验证码   然后比较验证码是否一致
-                    ## 从数据库中查询到验证码
-                    LoginUser.objects.create(email =email,username=email,
-                                             password=setPassword(password),user_type=0)
-                    result = "注册成功"
+                    ## 获取验证码   然后比较验证码是否一致    从数据库中查询到验证码
+                    validcode = ValidCode.objects.filter(user=email,code=code).order_by("-id").first()
+                    if validcode:
+                        ## 判断有效时间
+                        ## 当前时间 - 创建的时间  》 2min  失效
+                        now_time = datetime.datetime.now()
+                        db_time = validcode.date   ## 创建时间
+                        print(now_time,db_time)
+                        # t = (now_time - db_time).seconds   ## 当天
+                        t = (now_time - db_time).total_seconds()
+                        if t > 120:
+                            result = "验证码失效，请重新获取！"
+                        else:
+                            LoginUser.objects.create(email =email,username=email,
+                                                     password=setPassword(password),user_type=0)
+                            result = "注册成功"
+                    else:
+                        result = "验证码不正确"
         else:
             result = "不能为空"
     return render(request,"seller/register.html",locals())
@@ -78,10 +93,17 @@ def login(request):
             result = "参数为空"
 
     return render(request,"seller/login.html",locals())
-
+from CeleryTask.tasks import Test,add,sendDingDing
 ## 首页
 @LoginValid
 def index(request):
+    ##
+    # print("hello")
+    # Test.delay()  ## 将任务添加到celery
+    # add.delay(10,30)
+    params = dict(content = "验证码为10001",isAtAll=True,atMobiles=[])
+    sendDingDing(params)
+
     return render(request,"seller/index.html")
 ## 登出
 def logout(request):
@@ -201,7 +223,10 @@ def get_code(request):
         "isAtAll":True
     }
     try:
-        senddingding(params)
+        sendDingDing.delay(params)
+        ### 保存验证码
+        ValidCode.objects.create(code=code,user=request.GET.get("email"))
+
         result = {"code": 10000, "msg": "发送验证码成功"}
     except:
         result = {"code": 10001, "msg": "发送验证码失败"}

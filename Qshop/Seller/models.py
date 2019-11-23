@@ -47,4 +47,10 @@ class Goods(models.Model):
     class Meta:
         db_table = "goods"
 
+class ValidCode(models.Model):
+    code = models.CharField(max_length=32,verbose_name="验证码内容")
+    user = models.CharField(max_length=32,verbose_name="用户")
+    date = models.DateTimeField(auto_now=True,verbose_name="创建时间")
+
+
 

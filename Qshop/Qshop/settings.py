@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Buyer',
-    'Seller'
+    'Seller',
+    'djcelery'
 
 ]
 
@@ -118,13 +119,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -159,3 +161,35 @@ alipay = AliPay(
         sign_type="RSA2",
         debug=False
 )
+
+import djcelery  ## 导包
+djcelery.setup_loader()  ## 模块加载
+BROKER_URL = 'redis://127.0.0.1:6379/1'    ### 中间人  消息中间件 指定连接redis中的第二个库作为消息队列
+CELERY_IMPORTS = ('CeleryTask.tasks')  ##具体的任务文件
+CELERY_TIMEZONE = 'Asia/Shanghai'   ## celery 时区
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"  ### celery的处理器 固定的
+
+
+from celery.schedules import timedelta,crontab
+
+CELERYBEAT_SCHEDULE = {
+    u"测试demo01":{
+        "task":"CeleryTask.tasks.Test",   ## 定时任务要执行的任务
+        "schedule":timedelta(seconds=2)     ### timedelta 定时任务的一种写法
+        # "schedule":crontab(hour=2)     ### crontab   没两小时执行一次
+        # "schedule":crontab(minute=2,hour=2)     ### crontab   没两分钟执行一次
+        # "schedule":crontab(minute=0,hour="*/2")     ### 每两小时的0分执行一次
+        # "schedule":crontab(minute=0,hour="*/2,8-12")     ### 每两小时执行一次或者  8到12点执行一次
+        # "schedule":crontab(minute=0,hour=0,day_of_month="2-31/2")     ### 偶数天执行
+        # "schedule":crontab(minute=0,hour=0,day_of_month="1",month_of_year="5")     ### 每年的 5月 1日执行
+    }
+}
+
+
+
+
+
+
+
+
+
