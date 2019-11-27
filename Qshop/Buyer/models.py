@@ -16,6 +16,7 @@ class PayOrder(models.Model):
     order_status = models.IntegerField(choices=ORDER_STATUS,verbose_name="订单状态")
     order_total = models.FloatField(verbose_name="订单总价")
     order_user = models.ForeignKey(to=LoginUser,on_delete=models.CASCADE,verbose_name="买家")
+    order_address = models.IntegerField(verbose_name="订单收货地址",default=0)
     class Meta:
         db_table = 'payorder'
         verbose_name = '订单表'

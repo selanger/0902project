@@ -25,7 +25,9 @@ def LoginValid(func):
     return inner
 
 
+from django.views.decorators.cache import cache_page
 # @LoginValid
+# @cache_page(120)
 def index(request):
     # goods_type = GoodsType.objects.all()
     # return render(request,"buyer/index.html",locals())
@@ -147,6 +149,12 @@ def goodsdetail(request,goods_id):
     ## 查询商品
     ## 返回商品数据
     goods = Goods.objects.get(id=int(goods_id))
+    ## 当前使用的地址
+    address = UserAddress.objects.filter(status = 1).first()
+
+
+
+
     return render(request,'buyer/detail.html',locals())
 
 ## 个人中心
@@ -183,7 +191,46 @@ def user_center_order(request):
 ## 收货地址
 @LoginValid
 def user_center_site(request):
-    return render(request,"buyer/user_center_site.html")
+    user_id = request.COOKIES.get("user_id")
+    user = LoginUser.objects.get(id = user_id)
+    ## get 请求  返回页面  和已经有的地址
+    ## post请求  保存新的地址
+    if request.method == "POST":
+        data = request.POST
+        ## 获取数据，保存数据
+        useraddress = UserAddress()
+        useraddress.user = user
+        useraddress.address = data.get("address")
+        useraddress.phone = data.get("phone")
+        useraddress.name = data.get("name")
+        useraddress.status = 0
+        useraddress.save()
+    ## 登录用户的所有地址
+    user_address_all = UserAddress.objects.filter(user=user).all()
+    return render(request,"buyer/user_center_site.html",locals())
+
+### 修改地址
+def updateAddress(request):
+    if request.method == "POST":
+        print (request.POST)
+        address_id = request.POST.get("address")
+        print (address_id)
+        ## 完成修改地址状态
+        ## 2. 修改之前选中的地址状态
+        user_address = UserAddress.objects.filter(status = 1).first()
+        user_address.status = 0
+        user_address.save()
+
+        ## 1. 修改选中的地址的状态
+        user_address = UserAddress.objects.filter(id = address_id).first()
+        user_address.status = 1
+        user_address.save()
+
+    return HttpResponseRedirect("/buyer/user_center_site/")
+
+
+
+
 import time
 @LoginValid
 def place_order(request):
@@ -195,6 +242,7 @@ def place_order(request):
     user_id = request.COOKIES.get("user_id")
     goods_id = request.GET.get("goods_id")
     goods_count = request.GET.get("goods_count")
+    address_id = request.GET.get("address_id")
     goods = Goods.objects.get(id=int(goods_id))
     ## 保存数据
     ## 保存订单
@@ -203,6 +251,7 @@ def place_order(request):
     payorder.order_status = 1  ## 未支付
     payorder.order_total = goods.goods_price * int(goods_count)
     payorder.order_user = LoginUser.objects.get(id = int(user_id))
+    payorder.order_address = address_id
     payorder.save()
     ## 保存订单详情
 
@@ -213,8 +262,8 @@ def place_order(request):
     orderinfo.goods_count = int(goods_count)
     orderinfo.goods_total_price =  goods.goods_price * int(goods_count)
     orderinfo.save()
-
-
+    ## 查询都选中的地址
+    address = UserAddress.objects.get(id = address_id)
     return render(request,"buyer/place_order.html",locals())
 
 
@@ -363,4 +412,8 @@ def change_cart(reuqest):
 
     return JsonResponse(result)
 
+def temptest(request):
+    goods = Goods.objects.all()
+    count = 10
+    return render(request,'buyer/test.html',locals())
 

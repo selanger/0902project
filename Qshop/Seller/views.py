@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 import hashlib
 from .models import *
 from django.core.paginator import Paginator
+import logging
+collect = logging.getLogger("django")
 # Create your views here.
 ## 加密
 def setPassword(password):
@@ -57,7 +59,7 @@ def register(request):
                         ## 当前时间 - 创建的时间  》 2min  失效
                         now_time = datetime.datetime.now()
                         db_time = validcode.date   ## 创建时间
-                        print(now_time,db_time)
+                        # print(now_time,db_time)
                         # t = (now_time - db_time).seconds   ## 当天
                         t = (now_time - db_time).total_seconds()
                         if t > 120:
@@ -86,6 +88,10 @@ def login(request):
                 response.set_cookie("username",user.username)
                 response.set_cookie("user_id",user.id)
                 request.session["email"] = email
+                ## 代表用户登录成功
+                ## 日志：  xxx用户在xxxx时间登录成功
+                collect.debug("%s is login" % user.username)
+
                 return response
             else:
                 result = "账号或者密码不正确"
@@ -115,15 +121,40 @@ def logout(request):
     del request.session["email"]
     return response
 ## 商品列表
+from django.core.cache import cache
 @LoginValid
 def goods_list(request,type,page=1):
-    user_id = request.COOKIES.get("user_id")
-    ##
-    user = LoginUser.objects.get(id =int(user_id))
+    # user_id = request.COOKIES.get("user_id")
+    # ##
+    # user = LoginUser.objects.get(id =int(user_id))
+    #
+    # goods = Goods.objects.filter(goods_status = int(type),goods_store = user).order_by("-goods_number")
+    # goods_obj = Paginator(goods,10)
+    # goods_list = goods_obj.page(page)
+    #
+    ### 从缓存中获取数据
+    data = cache.get("goods_list_data")
+    goods_obj = cache.get("goods_obj")
+    print(data)
+    if data and goods_obj:
+        goods_list = data
 
-    goods = Goods.objects.filter(goods_status = int(type),goods_store = user).order_by("-goods_number")
-    goods_obj = Paginator(goods,10)
-    goods_list = goods_obj.page(page)
+        ## 如果存在   直接获取
+    else:
+        ## 如果不存在 需要查询数据库 将查询结果增加到缓存中
+        user_id = request.COOKIES.get("user_id")
+        print(user_id)
+        ##
+        user = LoginUser.objects.get(id=int(user_id))
+
+        goods = Goods.objects.filter(goods_status=int(type), goods_store=user).order_by("-goods_number")
+        goods_obj = Paginator(goods, 10)
+        goods_list = goods_obj.page(page)
+        cache.set("goods_list_data",goods_list,600)
+        cache.set("goods_obj",goods_obj,600)
+        ####   设置缓存  缓存的名字（key)   缓存的value   缓存的有效时间
+
+
     return render(request,'seller/goods_list.html',locals())
 ### 个人中心
 @LoginValid
@@ -179,7 +210,7 @@ def goods_status(request,type,id):
 
     # return HttpResponseRedirect("/goods_list/1/1/")
     url = request.META.get("HTTP_REFERER")  ## 获取请求的来源
-    print (url)
+    # print (url)
     return HttpResponseRedirect(url)
 
 @LoginValid
@@ -191,7 +222,7 @@ def goods_add(request):
         ##
         user_id = request.COOKIES.get("user_id")
         data = request.POST
-        print (data)
+        # print (data)
         goods = Goods()
         goods.goods_number = data.get("goods_number")
         goods.goods_name = data.get("goods_name")
@@ -231,3 +262,71 @@ def get_code(request):
     except:
         result = {"code": 10001, "msg": "发送验证码失败"}
     return JsonResponse(result)
+
+from django.http import HttpResponse,JsonResponse
+def middletest(request,date):
+    # print("我是 视图 ")
+    # return HttpResponse("middletest")
+    # def test():
+    #     return HttpResponse("xxxxxxxxxxxx")
+    # rep =  HttpResponse("middletest")
+    # rep.render = test
+    # return rep
+    return JsonResponse({"name":"hello"})
+
+
+def test(request):
+    user = LoginUser.objects.create(email="hello@126.com",password=123123)
+    return HttpResponse("sdss")
+
+
+def cachetest(request,id):
+    data = cache.get("name")
+    if data:
+        name = data
+        print(name)
+        cache.delete("name")
+        data = cache.get("name")
+        print(data)
+    else:
+        email = LoginUser.objects.filter(id = 2).first()
+        cache.set("name",email.email,600)
+        name = email.email
+    return HttpResponse("name:%s" % name)
+
+def get_goods(request):
+    ## 获取商品的id
+    goods_id = request.GET.get("id")
+    data = cache.get(goods_id)
+    if data:
+        print("第一次")
+        return HttpResponse(data)
+    else:
+        ## 查询商品
+        print("第二次")
+        goods = Goods.objects.filter(id = goods_id).first()
+        if goods:
+            cache.set(goods_id,goods.goods_name,600)
+        else:
+            cache.set(goods_id, None, 600)
+        return HttpResponse(goods.goods_name)
+
+def update_goods(request):
+    goods_id = request.GET.get("id")
+    goods_name = request.GET.get("goods_name")
+    goods = Goods.objects.get(id = goods_id)
+    ## 修改数据
+    ## 先判断数据是否在缓存中
+    data = cache.get(goods_id)
+    ## 如果在  删除缓存
+    if data:
+        print ("第三次")
+        cache.delete(goods_id)
+    goods.goods_name = goods_name
+    goods.save()
+    return HttpResponse("保存数据完成")
+
+
+
+
+

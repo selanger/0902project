@@ -39,11 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Buyer',
     'Seller',
-    'djcelery'
-
+    'djcelery',
+    'Buyer.templatetags'
 ]
 
 MIDDLEWARE = [
+    # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'Qshop.middlewaretest.MiddleWareTest',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'Qshop.urls'
@@ -76,7 +79,7 @@ WSGI_APPLICATION = 'Qshop.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
+#
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -91,8 +94,23 @@ DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': 'mydatabase',
-#     }
+#     },
+#     'slave': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'slavedb',
+#     },
+#     'slave2': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'slave2db',
+#     },
+#     'master1': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'slave2db',
+#     },
 # }
+
+# DATABASE_ROUTERS = ['Qshop.mydbrouter.Router']
+
 
 
 # Password validation
@@ -136,6 +154,20 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR,'static'),
 )
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        "LOCATION":[
+            "127.0.0.1:11211"    ## 链接本地 memcache 地址的 ip和端口
+        ]
+    }
+}
+CACHE_MIDDLEWARE_KEY_PREFIX = ''
+CACHE_MIDDLEWARE_SECONDS = 600
+CACHE_MIDDLEWARE_ALIAS = 'default'
+
 
 # STATIC_ROOT = os.path.join(BASE_DIR,'static')
 ## 媒体资源
@@ -183,6 +215,26 @@ CELERYBEAT_SCHEDULE = {
         # "schedule":crontab(minute=0,hour=0,day_of_month="2-31/2")     ### 偶数天执行
         # "schedule":crontab(minute=0,hour=0,day_of_month="1",month_of_year="5")     ### 每年的 5月 1日执行
     }
+}
+
+import os
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,   ## 关闭之前的日志
+    'handlers': {
+        'file': {
+            'level': 'INFO',   ### 收集的日志等级
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR,'django.log')
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
 }
 
 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% load myadd %}
+
+<br>
+
+{{ 30 | MyAdd }}
+
+{{ 20 | mymanyadd:30 }}
+
+{% myalladd 10 30 10 10 %}
+
+
+{{ goods }}
+
+<h2>商品数量</h2>
+{{ goods | getcount }}
+
+
+</body>
+</html>

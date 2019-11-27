@@ -138,8 +138,9 @@
         function () {
             var goods_count = $("#num").val();  //  购买数量
             var goods_id = {{ goods.id }};
+            var address_id = {{ address.id }}
 
-            url = "http://127.0.0.1:8000/buyer/place_order/?goods_count="+goods_count + "&goods_id=" + goods_id;
+            url = "http://127.0.0.1:8000/buyer/place_order/?goods_count="+goods_count + "&goods_id=" + goods_id +"&address_id=" + address_id;
 
             window.location.href = url;
         }

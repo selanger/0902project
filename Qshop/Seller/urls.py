@@ -12,5 +12,11 @@ urlpatterns = [
     path("personinfo/", PersonInfo),
     path("goods_add/", goods_add),
     path("get_code/", get_code),
+    path("get_goods/", get_goods),
+    path("update_goods/", update_goods),
+    re_path("cachetest/(\d)/", cachetest),
+    # path("middletest/", middletest),
+    # re_path("middletest/(\w+)/", middletest),
+    re_path("middletest/(?P<date>\w+)/", middletest),
 
 ]

@@ -5,46 +5,70 @@
 {% endblock %}
 
 {% block content %}
-<div class="main_con clearfix">
-		<div class="left_menu_con clearfix">
-			<h3>用户中心</h3>
-			<ul>
+    <div class="main_con clearfix">
+        <div class="left_menu_con clearfix">
+            <h3>用户中心</h3>
+            <ul>
                 <li><a href="/buyer/person_info/">· 个人信息</a></li>
-				<li><a href="/buyer/user_center_order/" >· 全部订单</a></li>
-				<li><a href="/buyer/user_center_site/" class="active">· 收货地址</a></li>
-			</ul>
-		</div>
-		<div class="right_content clearfix">
-				<h3 class="common_title2">收货地址</h3>
-				<div class="site_con">
-					<dl>
-						<dt>当前地址：</dt>
-						<dd>北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 182****7528</dd>
-					</dl>
-				</div>
-				<h3 class="common_title2">编辑地址</h3>
-				<div class="site_con">
-					<form>
-						<div class="form_group">
-							<label>收件人：</label>
-							<input type="text" name="">
-						</div>
-						<div class="form_group form_group2">
-							<label>详细地址：</label>
-							<textarea class="site_area"></textarea>
-						</div>
-						<div class="form_group">
-							<label>邮编：</label>
-							<input type="text" name="">
-						</div>
-						<div class="form_group">
-							<label>手机：</label>
-							<input type="text" name="">
-						</div>
+                <li><a href="/buyer/user_center_order/">· 全部订单</a></li>
+                <li><a href="/buyer/user_center_site/" class="active">· 收货地址</a></li>
+            </ul>
+        </div>
+        <div class="right_content clearfix">
+            <h3 class="common_title2">当前收货地址</h3>
+            <div class="site_con">
+                <dl>
+                    <dt>当前地址：</dt>
+                    {% for nowaddress in user_address_all %}
+                        {% if nowaddress.status == 1 %}
+                            <dd>{{ nowaddress.address }}（{{ nowaddress.name }} 收） {{ nowaddress.phone }}</dd>
+                        {% endif %}
+                    {% endfor %}
+                </dl>
+            </div>
 
-						<input type="submit" name="" value="提交" class="info_submit">
-					</form>
-				</div>
-		</div>
-	</div>
+            <div class="site_con">
+                <dl>
+                    <dt>修改地址</dt>
+                    <form action="/buyer/updateAddress/" method="post">
+                        {% csrf_token %}
+                        {% for nowaddress in user_address_all %}
+                            <dd>
+                                <input type="radio" name="address" value="{{ nowaddress.id }}">
+                                {{ nowaddress.address }}（{{ nowaddress.name }} 收） {{ nowaddress.phone }}
+                            </dd>
+
+                        {% endfor %}
+                        <input type="submit" value="修改地址">
+                    </form>
+                </dl>
+            </div>
+
+            <h3 class="common_title2">编辑地址</h3>
+            <div class="site_con">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form_group">
+                        <label>收件人：</label>
+                        <input type="text" name="name">
+                    </div>
+                    <div class="form_group form_group2">
+                        <label>详细地址：</label>
+                        <textarea class="site_area" name="address"></textarea>
+                    </div>
+                    <div class="form_group">
+                        <label>邮编：</label>
+                        <input type="text" name="">
+                    </div>
+                    <div class="form_group">
+                        <label>手机：</label>
+                        <input type="text" name="phone">
+                    </div>
+
+                    <input type="submit" name="" value="提交" class="info_submit">
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
