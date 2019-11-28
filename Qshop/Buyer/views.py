@@ -218,8 +218,9 @@ def updateAddress(request):
         ## 完成修改地址状态
         ## 2. 修改之前选中的地址状态
         user_address = UserAddress.objects.filter(status = 1).first()
-        user_address.status = 0
-        user_address.save()
+        if user_address:
+            user_address.status = 0
+            user_address.save()
 
         ## 1. 修改选中的地址的状态
         user_address = UserAddress.objects.filter(id = address_id).first()
@@ -251,7 +252,7 @@ def place_order(request):
     payorder.order_status = 1  ## 未支付
     payorder.order_total = goods.goods_price * int(goods_count)
     payorder.order_user = LoginUser.objects.get(id = int(user_id))
-    payorder.order_address = address_id
+    payorder.order_address_id = address_id
     payorder.save()
     ## 保存订单详情
 
@@ -261,6 +262,7 @@ def place_order(request):
     orderinfo.goods_price = goods.goods_price
     orderinfo.goods_count = int(goods_count)
     orderinfo.goods_total_price =  goods.goods_price * int(goods_count)
+    orderinfo.store_id = goods.goods_store_id        ## 卖家
     orderinfo.save()
     ## 查询都选中的地址
     address = UserAddress.objects.get(id = address_id)
@@ -341,6 +343,13 @@ def payresult(request):
     payorder = PayOrder.objects.get(order_number=out_trade_no)
     payorder.order_status = 2
     payorder.save()
+    ## 修改订单详情状态
+    payorder.orderinfo_set.all().update(order_status = 2)
+
+
+
+
+
 
     return render(request,"buyer/payresult.html",locals())
 
@@ -417,3 +426,25 @@ def temptest(request):
     count = 10
     return render(request,'buyer/test.html',locals())
 
+import random
+def add_goods(request):
+    ## 增加100 条
+    goods_name = "芹菜、西芹、菠菜、香菜、茼蒿、茴香、生菜、苋菜、莴苣、葱、香葱、分葱、胡葱、楼子葱、蒜头、洋葱头、韭菜、韭葱、黄瓜、丝瓜、冬瓜、菜瓜、苦瓜、南瓜、栉瓜、西葫芦、葫芦、瓠瓜、节瓜、越瓜、笋瓜、佛手瓜"
+    goods_name = goods_name.split("、")
+    address = "北京市，天津市，上海市，重庆市，河北省，山西省，辽宁省，吉林省，黑龙江省，江苏省，浙江省，安徽省，福建省，江西省，山东省，河南省，湖北省，湖南省，广东省，海南省，四川省，贵州省，云南省，陕西省，甘肃省，青海省，台湾省"
+    address = address.split("，")
+    ##
+    # for i in range(100):
+    for i,j in enumerate(range(100),1):  ## i 是索引
+        goods = Goods()
+        goods.goods_number = str(i).zfill(5)  ## 返回指定长度的字符串   长度是5
+        goods.goods_name = random.choice(address) + random.choice(goods_name)   ###从列表中随机取一个值
+        goods.goods_price = random.random()*100    ## 0到1 的小数
+        goods.goods_count = random.randint(1,100)
+        goods.goods_location = random.choice(address)
+        goods.goods_safe_data = random.randint(1,12)
+        goods.goods_type_id = 1
+        goods.goods_store_id = 1
+        goods.save()
+
+    return HttpResponse("增加数据")

@@ -24,6 +24,14 @@ def getcount(data):
     return num
 
 
+@register.filter()
+def getaddress(address_id):
+    ## 完成查询
+    from Seller.models import UserAddress
+    address = UserAddress.objects.get(id = address_id)
+
+    return address.name
+
 
 
 

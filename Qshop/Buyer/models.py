@@ -1,5 +1,5 @@
 from django.db import models
-from Seller.models import LoginUser,Goods
+from Seller.models import LoginUser,Goods,UserAddress
 
 # Create your models here.
 ORDER_STATUS = (
@@ -16,7 +16,8 @@ class PayOrder(models.Model):
     order_status = models.IntegerField(choices=ORDER_STATUS,verbose_name="订单状态")
     order_total = models.FloatField(verbose_name="订单总价")
     order_user = models.ForeignKey(to=LoginUser,on_delete=models.CASCADE,verbose_name="买家")
-    order_address = models.IntegerField(verbose_name="订单收货地址",default=0)
+    # order_address = models.IntegerField(verbose_name="订单收货地址",default=1)
+    order_address = models.ForeignKey(to=UserAddress,verbose_name="订单收货地址",default=1,on_delete=models.CASCADE)
     class Meta:
         db_table = 'payorder'
         verbose_name = '订单表'
@@ -27,6 +28,8 @@ class OrderInfo(models.Model):
     goods_price =  models.FloatField(verbose_name="商品单价")   ## 订单创建的时候商品单价
     goods_count = models.IntegerField(verbose_name="订单商品数量")
     goods_total_price = models.FloatField(verbose_name="商品小计")
+    store = models.ForeignKey(to=LoginUser,on_delete=models.CASCADE)
+    order_status = models.IntegerField(choices=ORDER_STATUS,verbose_name="订单详情状态",default="1")
 
     class Meta:
         db_table = 'orderinfo'

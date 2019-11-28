@@ -14,6 +14,8 @@ urlpatterns = [
     path("get_code/", get_code),
     path("get_goods/", get_goods),
     path("update_goods/", update_goods),
+    path("change_order/", change_order),
+    path("order/", order),
     re_path("cachetest/(\d)/", cachetest),
     # path("middletest/", middletest),
     # re_path("middletest/(\w+)/", middletest),
